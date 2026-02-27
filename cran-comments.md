@@ -1,11 +1,9 @@
-## Test environments
-- local: Windows 11, R 4.5.1 (ucrt)
-- win-builder: R-devel (ucrt)
-
 ## R CMD check results
-0 errors | 0 warnings | 1 note
+0 errors | 0 warnings | 0 notes
 
-## Notes
-- This is a new submission.
-- The only NOTE is related to this being a new submission.
-- The package provides tools for fitting, predicting, and visualizing spline-based nonlinear effects in multilevel and longitudinal models.
+## R-hub checks
+- Linux (R-devel): 0 errors, 0 warnings, 0 notes
+- macOS-arm64 (R-devel): 0 errors, 0 warnings, 0 notes
+- Windows (R-devel): 0 errors, 0 warnings, 0 notes
+
+## This is a new submission.
