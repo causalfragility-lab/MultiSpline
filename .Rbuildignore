@@ -5,3 +5,4 @@
 ^paper\.bib$
 ^LICENSE\.md$
 ^CRAN-SUBMISSION$
+^\.github$
