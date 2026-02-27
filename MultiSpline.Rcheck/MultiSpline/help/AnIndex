@@ -1,0 +1,8 @@
+nl_fit	nl_fit
+nl_icc	nl_icc
+nl_plot	nl_plot
+nl_predict	nl_predict
+nl_summary	nl_summary
+print.nl_fit	print.nl_fit
+print.summary_nl_fit	print.summary_nl_fit
+summary.nl_fit	summary.nl_fit

@@ -1,0 +1,32 @@
+Package: MultiSpline
+Type: Package
+Title: Spline-Based Nonlinear Modeling for Multilevel and Longitudinal
+        Data
+Version: 0.1.0
+Authors@R: 
+    person(given = "Subir",
+           family = "Hait",
+           email = "haitsubi@msu.edu",
+           role = c("aut", "cre"))
+Description: Provides tools for fitting, predicting, and visualizing nonlinear
+    relationships in single-level, multilevel, and longitudinal regression
+    models. Flexible functional forms are supported using natural cubic splines
+    via 'splines' and smooth terms via 'mgcv'. The package offers a unified
+    interface for specifying nonlinear effects, interactions with time
+    variables, clustering through random intercepts, and additional linear
+    covariates. Utilities are included to generate prediction grids and produce
+    effect plots, facilitating interpretation and visualization of nonlinear
+    effects in applied regression workflows.
+Depends: R (>= 4.2.0)
+Imports: stats, lme4, mgcv, dplyr, ggplot2, rlang
+Suggests: lmerTest, knitr, rmarkdown, reformulas
+License: GPL-3
+Encoding: UTF-8
+Language: en-US
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+NeedsCompilation: no
+Packaged: 2026-02-27 03:07:51 UTC; Subir
+Author: Subir Hait [aut, cre]
+Maintainer: Subir Hait <haitsubi@msu.edu>
+Built: R 4.5.1; ; 2026-02-27 03:08:05 UTC; windows
