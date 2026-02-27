@@ -1,5 +1,7 @@
 # MultiSpline
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14804307.svg)](https://doi.org/10.5281/zenodo.14804307)
+
 An R package for fitting, predicting, and visualizing nonlinear
 relationships in single-level, multilevel, and longitudinal regression
 models using spline-based methods.
@@ -73,6 +75,7 @@ MIT © Subir Hait
 
 Subir Hait, Michigan State University
  
+
 ## Citation
 
 If you use MultiSpline in your research, please cite:
@@ -85,5 +88,6 @@ Or:
 Hait, S. (2026). MultiSpline: Spline-Based Nonlinear Modeling
 for Multilevel and Longitudinal Data. R package version 0.1.0.
 https://cran.r-project.org/package=MultiSpline
+DOI: 10.5281/zenodo.14804307
 
 ```
