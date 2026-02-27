@@ -67,9 +67,23 @@ nl_plot(pred, x = "SES", time = "TimePoint")
 ```
 
 ## License
-
-GPL-3
+MIT © Subir Hait
 
 ## Author
 
 Subir Hait, Michigan State University
+ 
+## Citation
+
+If you use MultiSpline in your research, please cite:
+```r
+citation("MultiSpline")
+```
+
+Or:
+```
+Hait, S. (2026). MultiSpline: Spline-Based Nonlinear Modeling
+for Multilevel and Longitudinal Data. R package version 0.1.0.
+https://cran.r-project.org/package=MultiSpline
+
+```
