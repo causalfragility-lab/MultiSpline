@@ -30,7 +30,7 @@ Suggests:
     knitr,
     rmarkdown,
     reformulas
-License: GPL-3
+License: MIT + file LICENSE
 Encoding: UTF-8
 Language: en-US
 Roxygen: list(markdown = TRUE)
