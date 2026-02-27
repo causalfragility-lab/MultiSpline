@@ -1,3 +1,5 @@
 ^MultiSpline\.Rproj$
 ^\.Rproj\.user$
 ^cran-comments\.md$
+^paper\.md$
+^paper\.bib$
