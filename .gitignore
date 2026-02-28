@@ -1,3 +1,7 @@
 .Rproj.user
 MultiSpline.Rcheck/
 *.tar.gz
+figure_true_gaps.png
+simulation_results_raw.rds
+*.rds
+*.png
