@@ -76,7 +76,17 @@
 #' }
 #'
 #' @examples
-#' \dontrun{
+#' set.seed(1)
+#' mydata <- data.frame(
+#'   outcome        = rnorm(120),
+#'   age            = runif(120, 18, 65),
+#'   id             = rep(1:30, each = 4),
+#'   wave           = rep(1:4, times = 30),
+#'   sex            = factor(sample(c("F", "M"), 120, replace = TRUE)),
+#'   baseline_score = rnorm(120)
+#' )
+#'
+#' \donttest{
 #' # Single-level natural spline
 #' fit_sl <- nl_fit(data = mydata, y = "outcome", x = "age", df = 4)
 #'

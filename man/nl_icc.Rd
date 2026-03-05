@@ -13,13 +13,14 @@ multilevel model fitted via \code{lme4::lmer()} or
 \code{lme4::glmer()}).}
 
 \item{include_residual}{Logical; if \code{TRUE} (default), includes the
-residual variance component \code{ICC_resid} in the output so that all
-values sum to 1.}
+residual variance component \code{Residual} in the output so that all
+values sum to 1 (when a residual variance is available).}
 }
 \value{
 A named numeric vector of ICCs, one per grouping factor (named
 \code{ICC_<groupname>}) plus \code{Residual} for the residual variance
-(when \code{include_residual = TRUE}). All values sum to 1.
+(when \code{include_residual = TRUE}). When a residual variance is available,
+all values sum to 1.
 }
 \description{
 Extracts variance components from a multilevel \code{nl_fit} object and
@@ -30,7 +31,15 @@ The ICC for grouping factor \eqn{g} is defined as:
 \deqn{ICC_g = \frac{\sigma^2_g}{\sum_j \sigma^2_j + \sigma^2_\epsilon}}
 }
 \examples{
-\dontrun{
+set.seed(1)
+mydata <- data.frame(
+  math_score = rnorm(240),
+  SES        = rnorm(240),
+  id         = rep(1:60, each = 4),
+  schid      = rep(1:12, each = 20)
+)
+
+\donttest{
 fit <- nl_fit(
   data    = mydata,
   y       = "math_score",

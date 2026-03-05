@@ -13,18 +13,27 @@
 #'   multilevel model fitted via \code{lme4::lmer()} or
 #'   \code{lme4::glmer()}).
 #' @param include_residual Logical; if \code{TRUE} (default), includes the
-#'   residual variance component \code{ICC_resid} in the output so that all
-#'   values sum to 1.
+#'   residual variance component \code{Residual} in the output so that all
+#'   values sum to 1 (when a residual variance is available).
 #'
 #' @return
 #' A named numeric vector of ICCs, one per grouping factor (named
 #' \code{ICC_<groupname>}) plus \code{Residual} for the residual variance
-#' (when \code{include_residual = TRUE}). All values sum to 1.
+#' (when \code{include_residual = TRUE}). When a residual variance is available,
+#' all values sum to 1.
 #'
 #' @seealso \code{\link{nl_fit}}
 #'
 #' @examples
-#' \dontrun{
+#' set.seed(1)
+#' mydata <- data.frame(
+#'   math_score = rnorm(240),
+#'   SES        = rnorm(240),
+#'   id         = rep(1:60, each = 4),
+#'   schid      = rep(1:12, each = 20)
+#' )
+#'
+#' \donttest{
 #' fit <- nl_fit(
 #'   data    = mydata,
 #'   y       = "math_score",
@@ -124,6 +133,9 @@ nl_icc <- function(object, include_residual = TRUE) {
   if (include_residual && is.finite(resid_var)) {
     icc <- c(icc, Residual = resid_var / total)
   }
+
+  # Optional: prefix names as ICC_<group> for clarity
+  names(icc) <- ifelse(names(icc) == "Residual", "Residual", paste0("ICC_", names(icc)))
 
   icc
 }
