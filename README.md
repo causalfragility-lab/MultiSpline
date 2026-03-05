@@ -73,6 +73,6 @@ citation("MultiSpline")
 Or:
 ```
 Hait, S. (2026). MultiSpline: Spline-Based Nonlinear Modeling
-for Multilevel and Longitudinal Data. R package version 0.1.0.
+for Multilevel and Longitudinal Data. R package version 0.1.1.
 https://cran.r-project.org/package=MultiSpline
 ```
