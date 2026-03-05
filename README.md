@@ -1,13 +1,10 @@
 # MultiSpline
 
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.14804307.svg)](https://doi.org/10.5281/zenodo.14804307)
-
 An R package for fitting, predicting, and visualizing nonlinear
 relationships in single-level, multilevel, and longitudinal regression
 models using spline-based methods.
 
 ## Overview
-
 In social and health science research, nonlinear effects are very common
 in clustered or longitudinal data. `MultiSpline` provides a simple and
 unified interface for estimating these effects without requiring manual
@@ -17,13 +14,11 @@ construction of spline terms or interaction structures.
 ```r
 # Install from CRAN
 install.packages("MultiSpline")
-
 # Or install the development version from GitHub
 devtools::install_github("causalfragility-lab/MultiSpline")
 ```
 
 ## Core Functions
-
 | Function | Description |
 |:---------|:------------|
 | `nl_fit()` | Fit a nonlinear single-level or multilevel model |
@@ -35,7 +30,6 @@ devtools::install_github("causalfragility-lab/MultiSpline")
 ## Example
 ```r
 library(MultiSpline)
-
 # Simulate data
 set.seed(42)
 d <- data.frame(
@@ -45,7 +39,6 @@ d <- data.frame(
   SES        = rnorm(600),
   math_score = rnorm(600, mean = 50, sd = 10)
 )
-
 # Fit nonlinear multilevel model
 fit <- nl_fit(
   data    = d,
@@ -56,13 +49,10 @@ fit <- nl_fit(
   method  = "ns",
   df      = 4
 )
-
 # Coefficient table
 nl_summary(fit)
-
 # Intraclass correlations
 nl_icc(fit)
-
 # Predictions and plot
 pred <- nl_predict(fit)
 nl_plot(pred, x = "SES", time = "TimePoint")
@@ -72,12 +62,9 @@ nl_plot(pred, x = "SES", time = "TimePoint")
 MIT © Subir Hait
 
 ## Author
-
 Subir Hait, Michigan State University
- 
 
 ## Citation
-
 If you use MultiSpline in your research, please cite:
 ```r
 citation("MultiSpline")
@@ -88,6 +75,4 @@ Or:
 Hait, S. (2026). MultiSpline: Spline-Based Nonlinear Modeling
 for Multilevel and Longitudinal Data. R package version 0.1.0.
 https://cran.r-project.org/package=MultiSpline
-DOI: 10.5281/zenodo.14804307
-
 ```
