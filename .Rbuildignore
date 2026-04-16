@@ -1,0 +1,6 @@
+ ^cran-comments\.md$
+^\.Rbuildignore$
+^.*\.Rproj$
+^\.Rproj\.user$
+^README\.Rmd$
+^cran-comments\.md$
