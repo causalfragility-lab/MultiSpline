@@ -1,63 +1,65 @@
-# MultiSpline v2.0.0
+# MultiSpline 0.2.0
 
 **Spline-Based Nonlinear Modeling for Multilevel and Longitudinal Data**
 
-> Author: Subir Hait · Michigan State University · haitsubi@msu.edu
+> Author: Subir Hait - Michigan State University - haitsubi@msu.edu
 
 ---
 
 ## Overview
 
 MultiSpline provides a unified interface for fitting, interpreting, and
-visualising nonlinear relationships in single-level and multilevel regression
+visualizing nonlinear relationships in single-level and multilevel regression
 models using natural cubic splines, B-splines, or GAM smooths.
 
-Version 2 is a major upgrade. Every item raised in the Moran correspondence
-has been addressed, and the package now offers a complete **estimation →
-interpretation → diagnostics** framework:
+Version 0.2.0 incorporates key methodological suggestions and extends the
+package into a unified estimation, interpretation, and diagnostic framework:
 
 | Layer | Functions |
 |-------|-----------|
-| **Estimation** | `nl_fit()` · `nl_knots()` |
+| **Estimation** | `nl_fit()` , `nl_knots()` |
 | **Prediction** | `nl_predict()` |
-| **Interpretation** | `nl_derivatives()` · `nl_turning_points()` · `nl_plot()` |
+| **Interpretation** | `nl_derivatives()` , `nl_turning_points()` , `nl_plot()` |
 | **Model selection** | `nl_compare()` |
-| **Variance explained** | `nl_r2()` · `nl_icc()` |
+| **Variance explained** | `nl_r2()` , `nl_icc()` |
 | **Cluster heterogeneity** | `nl_het()` |
 
 ---
 
-## What's New in v2
+## What's New in 0.2.0
 
-### 1. Two-way and Nested Clustering  *(Moran request)*
+### 1. Cross-classified and Nested Multilevel Structures
+
+Supply two cluster names and use `nested = TRUE` for nested random effects
+or `nested = FALSE` (default) for cross-classified random effects.
+**Important:** for nested models the first element of `cluster` is the
+higher-level grouping and the second is the lower-level grouping.
 
 ```r
-# Cross-classified (e.g. students nested in both schools and districts)
+# Cross-classified: students appearing in multiple schools and districts
 fit <- nl_fit(data = df, y = "score", x = "SES",
-              cluster = c("student_id", "school_id"),
+              cluster = c("school_id", "student_id"),
               nested  = FALSE)
+# generates: (1 | school_id) + (1 | student_id)
 
-# Nested (students within schools)
+# Nested: students within schools  (higher level first)
 fit <- nl_fit(data = df, y = "score", x = "SES",
-              cluster = c("student_id", "school_id"),
+              cluster = c("school_id", "student_id"),
               nested  = TRUE)
+# generates: (1 | school_id/student_id)
 ```
-
-Internally this generates `(1 | student_id) + (1 | school_id)` for
-cross-classified models and `(1 | student_id/school_id)` for nested models,
-passed to `lme4::lmer()` / `lme4::glmer()`.
 
 ---
 
-### 2. Confidence Intervals for Spline Curves  *(Moran request)*
+### 2. Confidence Intervals for Spline Curves
 
 All model types now return proper CI bands:
 
 | Model | CI method |
 |-------|-----------|
-| `lm` | Analytical (standard `predict.lm`) |
+| `lm` | Analytical (`predict.lm`) |
 | `gam` | Analytical (`mgcv`) |
-| `lmerMod` | Delta method via fixed-effects variance–covariance matrix |
+| `lmerMod` | Delta method via fixed-effects variance-covariance matrix |
 | `glmerMod` | Delta method on link scale + back-transformation (default) or parametric bootstrap (`glmer_ci = "boot"`) |
 
 ```r
@@ -70,21 +72,19 @@ nl_plot(pred_df = pred, x = "age", show_ci = TRUE)
 ### 3. Automatic Knot / df Selection
 
 ```r
-# Explore and select df explicitly
+# Explore df explicitly
 ks <- nl_knots(data = df, y = "score", x = "age",
                df_range = 2:10, criterion = "AIC")
-ks$best_df   # → e.g. 5
+ks$best_df
 
-# Or let nl_fit do it automatically
+# Or let nl_fit select automatically
 fit <- nl_fit(data = df, y = "score", x = "age",
               df = "auto", df_criterion = "AIC")
 ```
 
-A diagnostic plot of AIC/BIC vs df is produced automatically.
-
 ---
 
-### 4. Multilevel R² Decomposition  *(Moran request — r2_mlm)*
+### 4. Multilevel R-squared Decomposition
 
 ```r
 nl_r2(fit)
@@ -92,36 +92,38 @@ nl_r2(fit)
 
 **Output (LMM example):**
 ```
-=== MultiSpline R² Decomposition ===
+=== MultiSpline R-squared Decomposition ===
 Model type: LMM
 
-  Marginal  R²m = 0.1823   (fixed effects only)
-  Conditional R²c = 0.4761  (fixed + all random effects)
+  Marginal  R2m = 0.1823   (fixed effects only)
+  Conditional R2c = 0.4761  (fixed + all random effects)
 
 Variance Partition (r2_mlm-style):
      Component  Variance  Proportion
-Fixed effects    1.4221      0.1823
-student_id       1.8340      0.2350
-school_id        0.8762      0.1124
-Residual         3.6590      0.4690
+ Fixed effects    1.4221      0.1823
+    school_id    0.8762      0.1124
+   student_id    1.8340      0.2350
+      Residual   3.6590      0.4690
 ```
 
-Follows the Nakagawa-Schielzeth (2013) and Nakagawa-Johnson-Schielzeth (2017)
-formulas for marginal and conditional R². The level-specific variance
-partition mirrors the `r2_mlm` / Rights-Sterba (2019) approach.
+Follows the Nakagawa-Schielzeth (2013) and Nakagawa-Johnson-Schielzeth
+(2017) formulas for marginal and conditional R-squared. The level-specific
+variance partition mirrors the `r2_mlm` / Rights-Sterba (2019) approach.
 
 ---
 
 ### 5. Derivative-Based Interpretation Framework
 
 ```r
-pred  <- nl_predict(fit, x_seq = seq(18, 80, length.out = 200))
+pred  <- nl_predict(fit, x_seq = seq(8, 18, length.out = 200))
 deriv <- nl_derivatives(pred, x = "age")
 
-# Visualise slope (first derivative) with CI band
+# Slope (first derivative) with CI band
 nl_plot(deriv_df = deriv, x = "age", type = "slope")
 
-# Visualise curvature (second derivative)
+# Curvature (second derivative)
+# Note: second-derivative CI bands may be wide due to numerical
+# differentiation and should be interpreted cautiously.
 nl_plot(deriv_df = deriv, x = "age", type = "curvature")
 
 # Trajectory + slope side by side
@@ -132,11 +134,10 @@ nl_plot(pred_df = pred, deriv_df = deriv, x = "age", type = "combo")
 
 ```r
 tp <- nl_turning_points(deriv, x = "age")
-tp$turning_points      # local maxima and minima with x location and type
+tp$turning_points      # local maxima and minima
 tp$inflection_regions  # where concavity changes
 tp$slope_regions       # contiguous increasing / decreasing stretches
 
-# Overlay turning points on trajectory plot
 nl_plot(pred_df = pred, x = "age",
         show_turning_points = TRUE,
         turning_points      = tp$turning_points)
@@ -147,7 +148,7 @@ nl_plot(pred_df = pred, x = "age",
 ### 6. Model Comparison Workflow
 
 ```r
-nl_compare(fit)                           # default: linear + poly(2) + poly(3) + spline
+nl_compare(fit)                           # linear + poly(2) + poly(3) + spline
 nl_compare(fit, polynomial_degrees = 2:5) # custom comparators
 ```
 
@@ -173,9 +174,8 @@ nl_het(fit, n_clusters_plot = 50)
 ```
 
 Plots cluster-specific predicted trajectories (BLUPs) against the
-population-mean curve, and performs a likelihood-ratio test comparing
-random-slope vs random-intercept models to test whether the nonlinear
-effect genuinely varies across clusters.
+population-mean curve, and performs an LRT comparing random-slope vs
+random-intercept models.
 
 ---
 
@@ -190,8 +190,6 @@ fit_bs <- nl_fit(data = df, y = "score", x = "age",
 
 ### 9. Random Spline Slopes
 
-Allows the nonlinear trajectory to vary across clusters:
-
 ```r
 fit_rs <- nl_fit(data = df, y = "score", x = "age",
                  cluster = "id", random_slope = TRUE)
@@ -202,13 +200,11 @@ fit_rs <- nl_fit(data = df, y = "score", x = "age",
 ## Installation
 
 ```r
-# From source
-install.packages("path/to/MultiSpline_0.2.0.tar.gz", repos = NULL, type = "source")
+# From CRAN
+install.packages("MultiSpline")
 
-# Dependencies (install first if needed)
-install.packages(c("lme4", "mgcv", "dplyr", "ggplot2", "rlang", "splines"))
-# Optional (for p-values in LMM)
-install.packages("lmerTest")
+# From source
+install.packages("MultiSpline_0.2.0.tar.gz", repos = NULL, type = "source")
 ```
 
 ---
@@ -222,21 +218,20 @@ library(MultiSpline)
 ks <- nl_knots(data = nlme::Orthodont, y = "distance",
                x = "age", df_range = 2:8)
 
-# 2. Fit multilevel model with two-way clustering and auto df
+# 2. Fit multilevel model (students within schools, higher level first)
 fit <- nl_fit(
-  data     = nlme::Orthodont,
-  y        = "distance",
-  x        = "age",
-  cluster  = "Subject",
-  df       = "auto",
-  controls = NULL
+  data    = nlme::Orthodont,
+  y       = "distance",
+  x       = "age",
+  cluster = "Subject",
+  df      = "auto"
 )
-fit   # prints postestimation menu
+fit
 
 # 3. Coefficient table
 nl_summary(fit)
 
-# 4. Multilevel R²
+# 4. Multilevel R-squared
 nl_r2(fit)
 
 # 5. Model comparison
@@ -262,21 +257,22 @@ nl_het(fit)
 
 ## Changelog
 
-### v0.2.0 (2026)
-- **NEW** Two-way and nested clustering (`nested` argument)
+### 0.2.0 (2026)
+- **NEW** Cross-classified and nested multilevel structures (`nested` argument)
 - **NEW** CI for `glmerMod` via delta method and parametric bootstrap
 - **NEW** Automatic df / knot selection (`df = "auto"`, `nl_knots()`)
-- **NEW** Multilevel R² decomposition — marginal, conditional, level-specific (`nl_r2()`)
+- **NEW** Multilevel R-squared decomposition -- marginal, conditional,
+  level-specific (`nl_r2()`)
 - **NEW** First and second derivatives with CI (`nl_derivatives()`)
-- **NEW** Turning points, inflection regions, slope regions (`nl_turning_points()`)
+- **NEW** Turning points, inflection regions, slope regions
+  (`nl_turning_points()`)
 - **NEW** Built-in model comparison workflow (`nl_compare()`)
 - **NEW** Cluster heterogeneity analysis with LRT (`nl_het()`)
 - **NEW** B-spline basis (`method = "bs"`, `bs_degree`)
 - **NEW** Random spline slopes (`random_slope = TRUE`)
-- **ENHANCED** `nl_plot()` now supports `type = "slope"`, `"curvature"`, `"combo"`
-- **ENHANCED** `print.nl_fit` lists all v2 postestimation functions
+- **ENHANCED** `nl_plot()` gains `type = "slope"`, `"curvature"`, `"combo"`
 
-### v0.1.0 (2026-02-27)
+### 0.1.0 (2026-02-27)
 - Initial release: `nl_fit`, `nl_predict`, `nl_plot`, `nl_summary`, `nl_icc`
 
 ---
@@ -285,21 +281,21 @@ nl_het(fit)
 
 Hait, S. (2026). *MultiSpline: Spline-Based Nonlinear Modeling for Multilevel
 and Longitudinal Data* (R package version 0.2.0).
-https://github.com/haitsubi/MultiSpline
+https://github.com/causalfragility-lab/MultiSpline
 
 ---
 
 ## References
 
 - Nakagawa, S., & Schielzeth, H. (2013). A general and simple method for
-  obtaining R² from generalized linear mixed-effects models. *Methods in
-  Ecology and Evolution*, 4(2), 133–142.
+  obtaining R-squared from generalized linear mixed-effects models.
+  *Methods in Ecology and Evolution*, 4(2), 133--142.
 - Nakagawa, S., Johnson, P. C. D., & Schielzeth, H. (2017). The coefficient
-  of determination R² from generalized linear mixed-effects models revisited
-  and expanded. *Journal of the Royal Society Interface*, 14(134).
+  of determination R-squared from generalized linear mixed-effects models
+  revisited and expanded. *Journal of the Royal Society Interface*, 14(134).
 - Rights, J. D., & Sterba, S. K. (2019). Quantifying explained variance in
-  multilevel models. *Psychological Methods*, 24(3), 309–338.
+  multilevel models. *Psychological Methods*, 24(3), 309--338.
 - Wood, S. N. (2017). *Generalized Additive Models: An Introduction with R*
   (2nd ed.). Chapman & Hall/CRC.
-- Bates, D., Mächler, M., Bolker, B., & Walker, S. (2015). Fitting linear
+- Bates, D., Machler, M., Bolker, B., & Walker, S. (2015). Fitting linear
   mixed-effects models using lme4. *Journal of Statistical Software*, 67(1).
